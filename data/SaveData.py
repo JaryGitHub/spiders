@@ -1,6 +1,6 @@
 # ! /usr/bin/env python
 # -*- coding: utf-8 -*-
-import ClearData,json,pymongo
+import ClearData, json, pymongo
 
 
 def save_data_json(Dict, file_position='', way=''):
@@ -37,5 +37,3 @@ def save_data_mongodb(Dict, mongodbUrl, databaseName, collectionName):
     posts = db[collectionName]
     posts.insert(Dict)
     client.close()
-
-

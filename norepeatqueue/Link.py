@@ -2,11 +2,10 @@
 # -*- coding: utf-8 -*-
 
 class Link():
-
     def __init__(self):
         self.map = {}
         self.tail = 'head'
-        self.map['head'] = {'next':'null'}
+        self.map['head'] = {'next': 'null'}
 
     def __contains__(self, item):
         return item in self.map
@@ -29,9 +28,9 @@ class Link():
     def getTail(self):
         self.tail
 
-    def add(self,string):
+    def add(self, string):
         if string not in self.map:
-            self.map[string] = {'next':'null'}
+            self.map[string] = {'next': 'null'}
             self.map[self.tail]['next'] = string
             self.tail = string
 
@@ -44,9 +43,3 @@ class Link():
                 self.tail = 'head'
             return head_task
         return None
-
-
-
-
-
-

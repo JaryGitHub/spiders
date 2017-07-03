@@ -24,15 +24,13 @@ sys.setdefaultencoding('utf-8')
 另一个方面则是对数据部分的获得，将数据传给data部分进行清洗和储存
 """
 
+
 class ControlThread(threading.Thread):
-
     def __init__(self):
-
 
         '''
         初始化各个参数
         '''
-
 
         threading.Thread.__init__(self)
         self.analysis = None
@@ -48,9 +46,7 @@ class ControlThread(threading.Thread):
         self.urlList = []
         self.proxy_ip_list = []
 
-
-    def add_analysis(self,analysis):
-
+    def add_analysis(self, analysis):
 
         '''
         初始化从什么类型的网页上采用怎么样的提取规则
@@ -58,11 +54,9 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         self.analysis = analysis
 
-    def add_modift_url(self,keyword=None,analysiss=None):
-
+    def add_modift_url(self, keyword=None, analysiss=None):
 
         '''
         初始化是否需要对残缺的url添加前缀
@@ -71,12 +65,10 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         self.keyword = keyword
         self.analysiss = analysiss
 
-    def add_maximum_operating_frequency(self,maxnumber):
-
+    def add_maximum_operating_frequency(self, maxnumber):
 
         '''
         设置最大运行次数，超过则爬虫停止运行
@@ -84,11 +76,9 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         self.maximum = maxnumber
 
-    def add_limit_queue(self,limit):
-
+    def add_limit_queue(self, limit):
 
         '''
         设置进入队列的url的限制（列表传入），通过正则表达式来限制
@@ -96,11 +86,9 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         self.limit = limit
 
-    def add_operation_file(self,operation_file):
-
+    def add_operation_file(self, operation_file):
 
         '''
         设置数据保存的形式,设置了以json格式保存在txt中和nosql数据库中两种形式
@@ -108,11 +96,9 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         self.operation_file = operation_file
 
-    def add_whether_re_multiple_line_matching(self,whether):
-
+    def add_whether_re_multiple_line_matching(self, whether):
 
         '''
         设置是否需要正则表达式多行匹配
@@ -120,11 +106,9 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         self.whether = whether
 
-    def add_sleeptime(self,sleeptime):
-
+    def add_sleeptime(self, sleeptime):
 
         '''
         添加线程休息时间,如果不采用代理必须设置时间否则被封IP的概率很大
@@ -132,11 +116,9 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         self.sleeptime = sleeptime
 
-    def add_maxumunqueue(self,maxumunqueue):
-
+    def add_maxumunqueue(self, maxumunqueue):
 
         '''
         设置队列的最大容量
@@ -144,11 +126,9 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         self.maxumunqueue = maxumunqueue
 
-    def add_proxy(self,proxy_ip_list):
-
+    def add_proxy(self, proxy_ip_list):
 
         '''
         设置代理ip，传入一个列表
@@ -156,15 +136,9 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         self.proxy_ip_list = proxy_ip_list
 
-
-
-
-
-    def modiftUrl(self,craw,keyword=None,repart=None,list=None):
-
+    def modiftUrl(self, craw, keyword=None, repart=None, list=None):
 
         '''
         对于直接从网页上获得的url可能会有缺陷，缺少了一部分等。因为对于这些url需要处理添加部分或者替代
@@ -175,7 +149,6 @@ class ControlThread(threading.Thread):
         :return:一个处理完成的url列表
         '''
 
-
         if keyword == 'add':
             for i in xrange(len(list)):
                 if 'http' not in list[i]:
@@ -183,13 +156,12 @@ class ControlThread(threading.Thread):
             return list
         elif keyword == 'replace':
             for i in xrange(len(list)):
-                list[i] = craw.modifyUrl(repart[0],repart[1],list[i])
+                list[i] = craw.modifyUrl(repart[0], repart[1], list[i])
             return list
         else:
             return list
 
-    def judge_url(self,url,limit):
-
+    def judge_url(self, url, limit):
 
         '''
         在对于限制进入队列的url需要判断是不是满足相应的条件。
@@ -198,17 +170,15 @@ class ControlThread(threading.Thread):
         :return:True or False
         '''
 
-
-        if isinstance(limit,str):
-            return re.match(limit,url)
-        elif isinstance(limit,list):
+        if isinstance(limit, str):
+            return re.match(limit, url)
+        elif isinstance(limit, list):
             for i in limit:
-                if re.match(i,url):
+                if re.match(i, url):
                     return True
         return False
 
-    def queue_add_url(self,urlList,queue,limit=None,limitnumber=None):
-
+    def queue_add_url(self, urlList, queue, limit=None, limitnumber=None):
 
         '''
         将url加入到队列中，并且根本相应的限制条件进行筛选。
@@ -219,20 +189,18 @@ class ControlThread(threading.Thread):
         :return:返回一个已经添加好数据的队列
         '''
 
-
         if urlList:
             for i in urlList:
                 if limitnumber and limitnumber == queue.qsize():
                     break
                 elif i and limit:
-                    if self.judge_url(i,limit):
+                    if self.judge_url(i, limit):
                         queue.put(i)
                 elif i:
                     queue.put(i)
         return queue
 
-    def getHtmlUrl(self,craw,html,analysisDict,keyword=None,analysis=None):
-
+    def getHtmlUrl(self, craw, html, analysisDict, keyword=None, analysis=None):
 
         '''
         从html文档上面获取url
@@ -244,20 +212,18 @@ class ControlThread(threading.Thread):
         :return:从网页获得url列表
         '''
 
-
         if analysisDict:
             if analysisDict['url'][0] == 'R':
-                list = craw.findAll(analysisDict['url'][1:len(analysisDict['url'])],html)
-                list = self.modiftUrl(craw,keyword,analysis,list)
+                list = craw.findAll(analysisDict['url'][1:len(analysisDict['url'])], html)
+                list = self.modiftUrl(craw, keyword, analysis, list)
                 return list
             elif analysisDict['url'][0] == 'X':
-                list = craw.xpath(analysisDict['url'][1:len(analysisDict['url'])],html)
-                list = self.modiftUrl(craw,keyword,analysis,list)
+                list = craw.xpath(analysisDict['url'][1:len(analysisDict['url'])], html)
+                list = self.modiftUrl(craw, keyword, analysis, list)
                 return list
         return None
 
-    def find_analysis(self,url,analysisDict):
-
+    def find_analysis(self, url, analysisDict):
 
         '''
         字典解析的结构是相应的Url对应相应的解析方法，因为首先要匹配url，然后再去寻找这个url的解析方法
@@ -266,16 +232,12 @@ class ControlThread(threading.Thread):
         :return:返回解析字典的方法
         '''
 
-
         for i in analysisDict.keys():
-            if re.match(i,url):
+            if re.match(i, url):
                 return self.analysis[i]
         return None
 
-
-
-    def write_start_url(self,url):
-
+    def write_start_url(self, url):
 
         '''
         设置初始的url队列
@@ -283,13 +245,9 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         self.urlList.extend(url)
 
-
-
-    def getItem(self,craw,analysisDict,html,whether=True):
-
+    def getItem(self, craw, analysisDict, html, whether=True):
 
         '''
         解析html文档中的所需内容。
@@ -300,17 +258,15 @@ class ControlThread(threading.Thread):
         :return:
         '''
 
-
         item = {}
         for i in analysisDict.keys():
             if i != 'url' and analysisDict[i][0] == 'R':
-                item[i] = craw.findAll(analysisDict[i][1:len(analysisDict[i])],html,whether=whether)
+                item[i] = craw.findAll(analysisDict[i][1:len(analysisDict[i])], html, whether=whether)
             elif i != 'url' and analysisDict[i][0] == 'X':
-                item[i] = craw.xpath(analysisDict[i][1:len(analysisDict[i])],html)
+                item[i] = craw.xpath(analysisDict[i][1:len(analysisDict[i])], html)
         return item
 
     def run(self):
-
 
         '''
         主要的爬虫运行逻辑
@@ -318,13 +274,13 @@ class ControlThread(threading.Thread):
         '''
 
         ans = 0
-        q = NoRepeatQueue()# 初始化队列
-        c = HtmlAnalysis()# 初始化解析类
+        q = NoRepeatQueue()  # 初始化队列
+        c = HtmlAnalysis()  # 初始化解析类
         p = psutil.Process(os.getpid())
-        while self.thread_run:# 判断线程是否还在运行
+        while self.thread_run:  # 判断线程是否还在运行
             if self.thread_run == False:
                 break
-            if self.urlList:# 控制队列的大小
+            if self.urlList:  # 控制队列的大小
                 for i in self.urlList:
                     if q.qsize() <= self.maxumunqueue:
                         q.put(i)
@@ -335,49 +291,52 @@ class ControlThread(threading.Thread):
                 break
             while q.empty() == False:
                 url = q.get()
-                logging.debug('Now this url is running'+'  '+url)
-                logging.debug('Now'+'   '+str(q.qsize())+'  '+'in the queue')
-                logging.debug('Now the spiders in run'+'   '+str(ans)+'  '+'times')
-                logging.debug('Now the queue is '+'   '+str(Util.calculation_mebibyte(sys.getsizeof(q.queue.map)))+'  '+'MB')
-                logging.debug('Now the urllist is ' + '   ' + str(Util.calculation_mebibyte(sys.getsizeof(self.urlList))) + '  ' + 'MB')
-                logging.debug('Now the queue is '+'   '+str(p.memory_percent())+'%')
+                logging.debug('Now this url is running' + '  ' + url)
+                logging.debug('Now' + '   ' + str(q.qsize()) + '  ' + 'in the queue')
+                logging.debug('Now the spiders in run' + '   ' + str(ans) + '  ' + 'times')
+                logging.debug('Now the queue is ' + '   ' + str(
+                    Util.calculation_mebibyte(sys.getsizeof(q.queue.map))) + '  ' + 'MB')
+                logging.debug('Now the urllist is ' + '   ' + str(
+                    Util.calculation_mebibyte(sys.getsizeof(self.urlList))) + '  ' + 'MB')
+                logging.debug('Now the queue is ' + '   ' + str(p.memory_percent()) + '%')
                 ans += 1
-                if ans == self.maximum or self.thread_run == False:# 如果线程不能运行则返回退出
+                if ans == self.maximum or self.thread_run == False:  # 如果线程不能运行则返回退出
                     self.thread_run = False
                     break
-                elif p.memory_percent() >= 30:#当进程内存使用量超过系统内存30%时,自动开始释放内存
+                elif p.memory_percent() >= 30:  # 当进程内存使用量超过系统内存30%时,自动开始释放内存
                     break
                 else:
                     try:
-                        if self.proxy_ip_list:# 通过代理获得html页面
-                            html = DownLoad.getHtmlByG(url, proxyiplist=self.proxy_ip_list)
+                        if self.proxy_ip_list:  # 通过代理获得html页面
+                            html = DownLoad.getHtmlByGAndF(url, proxyiplist=self.proxy_ip_list)
                         else:
                             html = DownLoad.getHtmlByR(url)
                         time.sleep(self.sleeptime)
-                        analysisDict = self.find_analysis(url, self.analysis)# 获得解析的字典
+                        analysisDict = self.find_analysis(url, self.analysis)  # 获得解析的字典
                         if analysisDict and html:
-                            listUrl = self.getHtmlUrl(c, html, analysisDict, keyword=self.keyword, analysis=self.analysiss)#从html中提取到url
+                            listUrl = self.getHtmlUrl(c, html, analysisDict, keyword=self.keyword,
+                                                      analysis=self.analysiss)  # 从html中提取到url
                             q = self.queue_add_url(listUrl, q, self.limit, self.maxumunqueue)
                             listKey = analysisDict.keys()
                             listKey.remove('url')
-                            if self.operation_file[0] == 'json' and len(listKey) != 0:# 控制数据保存的地点
-                                SaveData.save_data_json(self.getItem(c, analysisDict, html, self.whether),file_position=self.operation_file[1],way=self.operation_file[2])
+                            if self.operation_file[0] == 'json' and len(listKey) != 0:  # 控制数据保存的地点
+                                SaveData.save_data_json(self.getItem(c, analysisDict, html, self.whether),
+                                                        file_position=self.operation_file[1],
+                                                        way=self.operation_file[2])
                             elif self.operation_file[0] == 'mongodb' and len(listKey) != 0:
-                                SaveData.save_data_mongodb(self.getItem(c, analysisDict, html, self.whether), self.operation_file[1], self.operation_file[2], self.operation_file[3])
+                                SaveData.save_data_mongodb(self.getItem(c, analysisDict, html, self.whether),
+                                                           self.operation_file[1], self.operation_file[2],
+                                                           self.operation_file[3])
                     except Exception:
                         logging.error('a error has happened')
                         continue
-            while q.empty() == False:# 定期控制释放内存
-                if Util.calculation_mebibyte(sys.getsizeof(self.urlList)) <= 10:# 当urllist的中转部分大小超过10mb时就不存入url
+            while q.empty() == False:  # 定期控制释放内存
+                if Util.calculation_mebibyte(sys.getsizeof(self.urlList)) <= 10:  # 当urllist的中转部分大小超过10mb时就不存入url
                     self.urlList.append(q.get())
                 else:
                     break
             gc.collect()
 
-
-
     def stop(self):
         self.thread_run = False
         exit(0)
-
-

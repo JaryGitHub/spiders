@@ -1,25 +1,24 @@
 # ! /usr/bin/env python
 # -*- coding: utf-8 -*-
-import re,chardet
+import re, chardet
 from lxml import etree
+
 """
 整个爬虫负责对获得html进行解析，例如：解析获得url列表，通过正则表达式进行匹配获得数据
 """
+
+
 class HtmlAnalysis:
-
     def __init__(self):
-
 
         '''
         设定xpath解析器的解析格式
         :return:
         '''
 
-
         self.parser = etree.HTMLParser(encoding='utf-8')
 
-    def change_code(self,html):
-
+    def change_code(self, html):
 
         '''
         修改html的编码格式，全部转化为utf-8
@@ -27,15 +26,13 @@ class HtmlAnalysis:
         :return:
         '''
 
-
         if chardet.detect(html[0:1000])['encoding'] == 'GB2312':
             html = html.decode('gbk').encode('utf-8')
             return html
         else:
             return html
 
-    def search(self,analysis,html):
-
+    def search(self, analysis, html):
 
         '''
         判断一个匹配方式的字符串是不是存在在html中
@@ -44,12 +41,10 @@ class HtmlAnalysis:
         :return:
         '''
 
-
         html = self.change_code(html)
-        return re.search(analysis,html)
+        return re.search(analysis, html)
 
-    def xpath(self,analysis,html):
-
+    def xpath(self, analysis, html):
 
         '''
         xpath解析的方法对html进行解析。
@@ -58,13 +53,11 @@ class HtmlAnalysis:
         :return:
         '''
 
-
         html = self.change_code(html)
         select = etree.HTML(html, parser=etree.HTMLParser(encoding='utf-8'))
         return select.xpath(analysis)
 
     def findAll(self, analysis, html, whether=True):
-
 
         '''
         使用正则表达式进行匹配。
@@ -74,15 +67,13 @@ class HtmlAnalysis:
         :return:
         '''
 
-
         html = self.change_code(html)
         if whether:
-            return re.findall(analysis,html,re.S)
+            return re.findall(analysis, html, re.S)
         else:
-            return re.findall(analysis,html)
+            return re.findall(analysis, html)
 
-    def getUrlList(self,urlRule,urllist):
-
+    def getUrlList(self, urlRule, urllist):
 
         '''
         判断一个list中的url是不是可以匹配
@@ -91,15 +82,13 @@ class HtmlAnalysis:
         :return:
         '''
 
-
         list = []
         for i in urllist:
-            if re.match(urlRule,i):
+            if re.match(urlRule, i):
                 list.append(i)
         return list
 
-    def modifyUrl(self,pattern,repl,string):
-
+    def modifyUrl(self, pattern, repl, string):
 
         '''
         使用正则表达式修改url
@@ -109,19 +98,15 @@ class HtmlAnalysis:
         :return:
         '''
 
-
-        return re.sub(pattern,repl,string)
-
+        return re.sub(pattern, repl, string)
 
     def extract(self, element):
-
 
         '''
         将数据从element对象中提取出来
         :param element:
         :return:
         '''
-
 
         return element.xpath('string(.)')
 
@@ -169,9 +154,3 @@ class HtmlAnalysis:
         elif '\n' in information:
             l = self.informationSplit(information, '\n')
             return l
-
-
-
-
-
-

@@ -2,8 +2,10 @@
 # -*- coding: utf-8 -*-
 import Queue
 from Link import Link
+
+
 class NoRepeatQueue(Queue.Queue):
-    def _init(self,maxsize=0):
+    def _init(self, maxsize=0):
         self.queue = Link()
 
     def _put(self, item):
@@ -14,4 +16,3 @@ class NoRepeatQueue(Queue.Queue):
 
     def _get(self):
         return self.queue.pop()
-
